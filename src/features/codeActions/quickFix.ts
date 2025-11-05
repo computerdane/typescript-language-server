@@ -249,7 +249,6 @@ export class TypeScriptQuickFixProvider implements CodeActionProvider<TsQuickFix
             return;
         }
 
-        await this.fileConfigurationManager.ensureConfigurationForDocument(document, token);
         if (token.isCancellationRequested) {
             return;
         }

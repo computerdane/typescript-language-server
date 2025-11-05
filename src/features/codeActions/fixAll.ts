@@ -243,8 +243,6 @@ export class TypeScriptAutoFixProvider implements CodeActionProvider {
             return actions;
         }
 
-        await this.fileConfigurationManager.ensureConfigurationForDocument(document, token);
-
         if (token.isCancellationRequested) {
             return undefined;
         }

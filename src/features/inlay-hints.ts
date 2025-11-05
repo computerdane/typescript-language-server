@@ -47,7 +47,6 @@ export class TypeScriptInlayHintsProvider {
             return [];
         }
 
-        await fileConfigurationManager.ensureConfigurationForDocument(document, token);
         if (token?.isCancellationRequested) {
             return [];
         }

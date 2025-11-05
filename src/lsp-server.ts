@@ -515,8 +515,6 @@ export class LspServer {
         const completionOptions = this.fileConfigurationManager.workspaceConfiguration.completions || {};
 
         const result = await this.tsClient.interruptGetErr(async () => {
-            await this.fileConfigurationManager.ensureConfigurationForDocument(document, token);
-
             const response = await this.tsClient.execute(
                 CommandTypes.CompletionInfo,
                 {
@@ -584,7 +582,6 @@ export class LspServer {
                 const uri = this.tsClient.toResourceUri(cachedData.file);
                 document = this.tsClient.toOpenDocument(uri);
                 if (document) {
-                    await this.fileConfigurationManager.ensureConfigurationForDocument(document, token);
                     const response = await this.tsClient.interruptGetErr(() => this.tsClient.execute(CommandTypes.CompletionDetails, cachedData, token));
                     if (response.type !== 'response' || !response.body?.length) {
                         return item;
@@ -604,8 +601,6 @@ export class LspServer {
         }
 
         const result = await this.tsClient.interruptGetErr(async () => {
-            await this.fileConfigurationManager.ensureConfigurationForDocument(document, token);
-
             const response = await this.tsClient.execute(
                 CommandTypes.Quickinfo,
                 Position.toFileLocationRequestArgs(document.filepath, params.position),
@@ -654,7 +649,6 @@ export class LspServer {
             return null;
         }
         const result = await this.tsClient.interruptGetErr(async () => {
-            await this.fileConfigurationManager.ensureConfigurationForDocument(document);
             const response = await this.tsClient.execute(CommandTypes.Rename, Position.toFileLocationRequestArgs(document.filepath, params.position), token);
             if (response.type !== 'response' || !response.body?.info.canRename || !response.body?.locs.length) {
                 return null;
@@ -817,8 +811,6 @@ export class LspServer {
                     mode = OrganizeImportsMode.SortAndCombine;
                 }
                 const response = await this.tsClient.interruptGetErr(async () => {
-                    await this.fileConfigurationManager.ensureConfigurationForDocument(document, token);
-
                     return this.tsClient.execute(
                         CommandTypes.OrganizeImports,
                         {
@@ -905,7 +897,6 @@ export class LspServer {
 
             const additionalArguments = (params.arguments[1] || {}) as { skipDestructiveCodeActions?: boolean; mode?: OrganizeImportsMode; };
             const body = await this.tsClient.interruptGetErr(async () => {
-                await this.fileConfigurationManager.ensureConfigurationForDocument(document);
                 const mode = additionalArguments.mode ?? (additionalArguments.skipDestructiveCodeActions ? OrganizeImportsMode.SortAndCombine : OrganizeImportsMode.All);
                 const response = await this.tsClient.execute(
                     CommandTypes.OrganizeImports,
